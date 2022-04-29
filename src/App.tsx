@@ -1,25 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Layout } from "antd";
+import { Content } from "antd/lib/layout/layout";
+import React, { useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+
+import "./App.css";
+import { Navbar } from "./components/Header";
+import { useTypedSelector } from "./hooks/useTypedSelector";
+import { Event } from "./pages/Event";
+import { Login } from "./pages/Login";
 
 function App() {
+  const navigate = useNavigate();
+
+  const { isAuth } = useTypedSelector(({ auth }) => auth);
+
+  useEffect(() => {
+    navigate("/");
+  }, [isAuth]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout className="App">
+      <Navbar />
+      <Content>
+        <Routes>
+          <Route
+            path="/"
+            element={isAuth ? <Event /> : <Navigate to="/login" replace />}
+          />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Content>
+    </Layout>
   );
 }
 
